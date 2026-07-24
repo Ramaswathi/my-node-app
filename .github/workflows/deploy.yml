@@ -43,9 +43,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::473469901042:role/GitHubActionsECSRole
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubActionsECSRole
           aws-region: ${{ env.AWS_REGION }}
       - name: Login to ECR
         id: login-ecr
