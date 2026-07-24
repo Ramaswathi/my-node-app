@@ -1,0 +1,47 @@
+{
+  "family": "my-node-app-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::473469901042:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::473469901042:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "my-node-app",
+      "image": "473469901042.dkr.ecr.ap-south-2.amazonaws.com/my-node-app:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "hostPort": 3000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "NODE_ENV",
+          "value": "production"
+        },
+        {
+          "name": "APP_VERSION",
+          "value": "1.0.0"
+        }
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:3000/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 10
+      }
+    }
+  ],
+  "runtimePlatform": {
+    "operatingSystemFamily": "LINUX",
+    "cpuArchitecture": "X86_64"
+  }
+}
