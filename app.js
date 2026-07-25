@@ -49,11 +49,11 @@ app.post("/api/users", (req, res) => {
 });
 
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
-    console.log(`Version: ${process.env.APP_VERSION || "1.0.0"}`);
-  });
+  app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
+  console.log(`Version: ${process.env.APP_VERSION || "1.0.0"}`);
+});
 }
 
 module.exports = app;
