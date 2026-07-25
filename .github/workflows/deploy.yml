@@ -40,25 +40,28 @@ jobs:
     needs: test
     outputs:
       image-tag: ${{ steps.build.outputs.image-tag }}
+
     steps:
       - uses: actions/checkout@v3
+
       - name: Configure AWS credentials
-  uses: aws-actions/configure-aws-credentials@v4
-  with:
-    role-to-assume: arn:aws:iam::473469901042:role/GitHubActionsECSRole
-    aws-region: ${{ env.AWS_REGION }}
-      - name: Login to ECR
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::473469901042:role/GitHubActionsECSRole
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      - name: Build & Push
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Push Image
         id: build
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:latest
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
           echo "image-tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
